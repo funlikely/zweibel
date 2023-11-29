@@ -13,26 +13,44 @@
 //     Minimum number of edits: 1
 //     Edited String: deed
 
-function getNumberEdits(pData) {
-  if (pData.testString.length == 1 || (pData.testString.length == 2 && pData.testString[0] == pData.testString[1])) {
-    return { testString: pData.testString, editCount: pData.editCount, editedString: pData.testString }
+function getNumberEdits(p) {
+  /*
+    p has
+      testString - the remainder of the string to test
+      editCount - the counter of how many edits have been made
+      palStack - the palindromic edits made to the string.
+                 Chars get pushed over the course of testing the string, and then the stack is used to build the final palindrome.
+  */
+  if (p.testString.length == 1) {
+    return {
+      testString: p.palStack + p.testString + p.palStack.split('').reverse().join(''),
+      editCount: p.editCount,
+      palStack: p.testString
+    }
   }
-  if (pData.testString.length == 2) {
-    return { testString: pData.testString, editCount: pData.editCount + 1, editedString: `${pData.testString[0]}${pData.testString[0]}` }
+  else if (p.testString.length == 2) {
+    edit = p.testString[0] != p.testString[1] ? 1 : 0;
+    return {
+      testString: `${p.palStack}${p.testString[0]}${p.testString[0]}${p.palStack.split('').reverse().join('')}`,
+      editCount: p.editCount + edit,
+      palStack: `${p.testString[0]}${p.testString[0]}`
+    }
   }
-  deleteStartOption = getNumberEdits({ testString: pData.testString.slice(1), editCount: pData.editCount + 1, editedString: pData.testString.slice(1)});
-  deleteEndOption = getNumberEdits({ testString: pData.testString.slice(0, -1), editCount: pData.editCount + 1, editedString: pData.testString.slice(0, -1)});
-  editOption = getNumberEdits({ testString: pData.testString.slice(1).slice(0, -1), editCount: pData.editCount + 1, editedString: pData.testString.slice(1).slice(0, -1)});
-  
-  if (deleteStartOption.editCount < editOption.editCount && deleteStartOption.editCount < deleteEndOption.editCount) {
-    return { testString: deleteStartOption.testString, editCount: deleteStartOption.editCount, editedString: deleteStartOption.testString }
+  else if (p.testString[0] == p.testString.slice(-1)) {
+    return getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount, palStack: p.testString })
   }
-  else if (deleteEndOption.editCount < editOption.editCount) {
-    return { testString: deleteEndOption.testString, editCount: deleteEndOption.editCount, editedString: deleteEndOption.testString }
+  a = getNumberEdits({ testString: p.testString.slice(1), editCount: p.editCount + 1, palStack: p.testString.slice(1) });
+  b = getNumberEdits({ testString: p.testString.slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(0, -1) });
+  c = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(1).slice(0, -1) });
+
+  if (a.editCount < c.editCount && a.editCount < b.editCount) {
+    return { testString: a.testString, editCount: a.editCount, palStack: a.testString }
+  }
+  else if (b.editCount < c.editCount) {
+    return { testString: b.testString, editCount: b.editCount, palStack: b.testString }
   }
   else {
-    return { testString: editOption.testString, editCount: editOption.editCount, editedString: editOption.testString }
-
+    return { testString: c.testString, editCount: c.editCount, palStack: c.testString }
   }
 }
 
@@ -48,10 +66,10 @@ function palindromeChecker(input) {
   console.log(`Input: ${input}\nReversed: ${reversed}`);
   console.log(`Palindrome: ${isPalindrome}`)
   if (!isPalindrome) {
-    startingPoint = { testString: input, editCount: 0, editedString: '' }
+    startingPoint = { testString: input, editCount: 0, palStack: '' }
     result = getNumberEdits(startingPoint)
     console.log(`Minimum number of edits: ${result.editCount}`)
-    console.log(`Edited String: ${result.editedString}`)
+    console.log(`Edited String: ${result.palStack}`)
   }
 
   // ADD YOUR CODE ABOVE HERE
@@ -67,3 +85,4 @@ function palindromeChecker(input) {
 palindromeChecker("input string");
 palindromeChecker("tacocat");
 palindromeChecker("infraredfi");
+palindromeChecker("racecarf");
