@@ -13,6 +13,8 @@
 //     Minimum number of edits: 1
 //     Edited String: deed
 
+memo = {}
+
 function getNumberEdits(p) {
   /*
     p has
@@ -36,22 +38,29 @@ function getNumberEdits(p) {
       palStack: `${p.testString[0]}${p.testString[0]}`
     }
   }
+  else if (memo[p.testString]) {
+    return memo[p.testString];
+  }
   else if (p.testString[0] == p.testString.slice(-1)) {
-    return getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount, palStack: p.testString })
-  }
-  a = getNumberEdits({ testString: p.testString.slice(1), editCount: p.editCount + 1, palStack: p.testString.slice(1) });
-  b = getNumberEdits({ testString: p.testString.slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(0, -1) });
-  c = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(1).slice(0, -1) });
-
-  if (a.editCount < c.editCount && a.editCount < b.editCount) {
-    return { testString: a.testString, editCount: a.editCount, palStack: a.testString }
-  }
-  else if (b.editCount < c.editCount) {
-    return { testString: b.testString, editCount: b.editCount, palStack: b.testString }
+    memo[p.testString] = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount, palStack: p.testString });
   }
   else {
-    return { testString: c.testString, editCount: c.editCount, palStack: c.testString }
+    a = getNumberEdits({ testString: p.testString.slice(1), editCount: p.editCount + 1, palStack: p.testString.slice(1) });
+    b = getNumberEdits({ testString: p.testString.slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(0, -1) });
+    c = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount + 1, palStack: p.testString.slice(1).slice(0, -1) });
+  
+    if (a.editCount < c.editCount && a.editCount < b.editCount) {
+      memo[p.testString] = { testString: a.testString, editCount: a.editCount, palStack: a.testString }
+    }
+    else if (b.editCount < c.editCount) {
+      memo[p.testString] = { testString: b.testString, editCount: b.editCount, palStack: b.testString }
+    }
+    else {
+      memo[p.testString] = { testString: c.testString, editCount: c.editCount, palStack: c.testString }
+    }
   }
+
+  return memo[p.testString];
 }
 
 
