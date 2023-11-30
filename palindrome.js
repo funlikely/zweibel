@@ -63,7 +63,7 @@ function palindromeChecker(input) {
 
   reversed = input.split('').reverse().join('');
   isPalindrome = reversed == input;
-  console.log(`Input: ${input}\nReversed: ${reversed}`);
+  console.log(`\nInput: ${input}`);
   console.log(`Palindrome: ${isPalindrome}`)
   if (!isPalindrome) {
     startingPoint = { testString: input, editCount: 0, palStack: '' }
@@ -80,9 +80,21 @@ function palindromeChecker(input) {
 
 }
 
-
-
 palindromeChecker("input string");
+
 palindromeChecker("tacocat");
 palindromeChecker("infraredfi");
+
 palindromeChecker("racecarf");
+palindromeChecker("fracecar");
+
+palindromeChecker("a1234554321");
+palindromeChecker("a12345677654321");
+palindromeChecker("a123456776b54321");
+palindromeChecker("aa123456776bb54321");
+
+palindromeChecker("baaac");
+palindromeChecker("aaac");
+palindromeChecker("baxcac");
+palindromeChecker("baVxcVac");
+palindromeChecker("baV___xc___Vac");
