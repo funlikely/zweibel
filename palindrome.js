@@ -13,8 +13,6 @@
 //     Minimum number of edits: 1
 //     Edited String: deed
 
-memo = {}
-
 function getNumberEdits(p) {
   /*
     p has
@@ -24,11 +22,13 @@ function getNumberEdits(p) {
                  Chars get pushed over the course of testing the string, and then the stack is used to build the final palindrome.
   */
   if (p.testString.length == 1) {
-    return {
+    i = {
       testString: p.palStack + p.testString + p.palStack.split('').reverse().join(''),
       editCount: p.editCount,
       palStack: ""
-    }
+    };
+    logIntermediateStep(i);
+    return i;
   }
   else if (p.testString.length == 2) {
     edit = p.testString[0] != p.testString[1] ? 1 : 0;
@@ -38,27 +38,35 @@ function getNumberEdits(p) {
       palStack: ""
     }
   }
-  else if (memo[p.testString]) {
-    return memo[p.testString];
-  }
   else if (p.testString[0] == p.testString.slice(-1)) {
-    return getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount, palStack: `${p.palStack}${p.testString[0]}` })
+    i = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount, palStack: `${p.palStack}${p.testString[0]}` });
+    logIntermediateStep(i);
+
+    return i;
   }
+  // Remove first character
   a = getNumberEdits({ testString: p.testString.slice(1), editCount: p.editCount + 1, palStack: `${p.palStack}${p.testString[0]}` });
+  // Remove last character
   b = getNumberEdits({ testString: p.testString.slice(0, -1), editCount: p.editCount + 1, palStack: `${p.palStack}${p.testString.slice(-1)}` });
+  // Remove first and last character
   c = getNumberEdits({ testString: p.testString.slice(1).slice(0, -1), editCount: p.editCount + 1, palStack: `${p.palStack}${p.testString[0]}` });
 
   if (a.editCount < c.editCount && a.editCount < b.editCount) {
-    memo[p.testString] = { testString: a.testString, editCount: a.editCount, palStack: a.testString }
+    i = { testString: a.testString, editCount: a.editCount, palStack: a.testString }
   }
   else if (b.editCount < c.editCount) {
-    memo[p.testString] = { testString: b.testString, editCount: b.editCount, palStack: b.testString }
+    i = { testString: b.testString, editCount: b.editCount, palStack: b.testString }
   }
   else {
-    memo[p.testString] = { testString: c.testString, editCount: c.editCount, palStack: c.testString }
+    i = { testString: c.testString, editCount: c.editCount, palStack: c.testString }
   }
+  logIntermediateStep(i);
 
-  return memo[p.testString];
+  return i;
+
+  function logIntermediateStep(i) {
+    console.log(`Intermediate step: ${i.testString}, ${i.editCount}, ${i.palStack}`);
+  }
 }
 
 
@@ -87,21 +95,23 @@ function palindromeChecker(input) {
 
 }
 
-palindromeChecker("input string");
+palindromeChecker("fnoon");
 
-palindromeChecker("tacocat");
-palindromeChecker("infraredfi");
+// palindromeChecker("input string");
 
-palindromeChecker("racecarf");
-palindromeChecker("fracecar");
+// palindromeChecker("tacocat");
+// palindromeChecker("infraredfi");
 
-palindromeChecker("a1234554321");
-palindromeChecker("a12345677654321");
-palindromeChecker("a123456776b54321");
-palindromeChecker("aa123456776bb54321");
+// palindromeChecker("racecarf");
+// palindromeChecker("fracecar");
 
-palindromeChecker("baaac");
-palindromeChecker("aaac");
-palindromeChecker("baxcac");
-palindromeChecker("baVxcVac");
-palindromeChecker("baV___xc___Vac");
+// palindromeChecker("a1234554321");
+// palindromeChecker("a12345677654321");
+// palindromeChecker("a123456776b54321");
+// palindromeChecker("aa123456776bb54321");
+
+// palindromeChecker("baaac");
+// palindromeChecker("aaac");
+// palindromeChecker("baxcac");
+// palindromeChecker("baVxcVac");
+// palindromeChecker("baV___xc___Vac");
